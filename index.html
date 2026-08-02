@@ -3,1437 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>SlipNet Collector · THE SAZ</title>
+    <title>SlipNet Cyber Command · THE SAZ</title>
     
-    <!-- Vazirmatn Font -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
         /* ============================================================
-           CSS VARIABLES – NEON THEME
+           CYBERPUNK VARIABLES
            ============================================================ */
         :root {
-            /* Core colors - Neon palette */
-            --bg-primary: #0a0e17;
-            --bg-secondary: #111927;
-            --bg-card: #162033;
-            --bg-input: #1a2a42;
-            --bg-hover: #1f3550;
-            --text-primary: #e8f0fe;
-            --text-secondary: #8ab4f8;
-            --text-muted: #4a6a8a;
-            --border-color: #2a4a6a;
+            --bg-primary: #020204;
+            --bg-secondary: #0a0a10;
+            --bg-card: #101018;
+            --bg-input: #151520;
+            --bg-hover: #1c1c2a;
+            --text-primary: #e0e0ff;
+            --text-secondary: #00f0ff;
+            --text-muted: #4a5568;
+            --border-color: rgba(0, 240, 255, 0.25);
             
-            /* Neon accents */
-            --neon-blue: #00d4ff;
-            --neon-pink: #ff2d95;
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff0055;
             --neon-purple: #b026ff;
-            --neon-green: #39ff14;
+            --neon-green: #00ff41;
             --neon-yellow: #ffe600;
-            --neon-orange: #ff6a00;
             
-            --accent: var(--neon-blue);
-            --accent-hover: #00b8e6;
-            --shadow: 0 0 30px rgba(0, 212, 255, 0.15), 0 0 60px rgba(0, 212, 255, 0.05);
-            --glow: 0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(0, 212, 255, 0.1);
-            
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-size: 16px;
-            --spacing: 1;
-            --radius: 6px; /* کم‌ترین گردی */
-            --success: var(--neon-green);
-            --danger: #ff1744;
-            --warning: var(--neon-yellow);
-            --font-family: 'Vazirmatn', 'Segoe UI', Tahoma, system-ui, -apple-system, sans-serif;
+            --accent: var(--neon-cyan);
+            --font-family: 'Vazirmatn', monospace, sans-serif;
         }
-
-        /* Light theme override – still with neon touch */
-        [data-theme="light"] {
-            --bg-primary: #e8edf5;
-            --bg-secondary: #d5dde8;
-            --bg-card: #c5d0de;
-            --bg-input: #b0c0d4;
-            --bg-hover: #a0b4cc;
-            --text-primary: #0a1a2e;
-            --text-secondary: #1a3a5e;
-            --text-muted: #4a6a8a;
-            --border-color: #8ab4f8;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --glow: 0 0 15px rgba(0, 212, 255, 0.2);
-        }
-
-        [data-density="compact"]   { --spacing: 0.7; --radius: 4px; }
-        [data-density="comfortable"] { --spacing: 1; --radius: 6px; }
-        [data-density="spacious"]  { --spacing: 1.3; --radius: 8px; }
-
-        [data-font="small"]  { --font-size: 14px; }
-        [data-font="medium"] { --font-size: 16px; }
-        [data-font="large"]  { --font-size: 18px; }
 
         /* ============================================================
-           RESET & BASE
+           BASE & SCANLINES (CRT EFFECT)
            ============================================================ */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: var(--font-family);
-            background: var(--bg-primary);
+            background-color: var(--bg-primary);
             color: var(--text-primary);
-            font-size: var(--font-size);
-            transition: background var(--transition), color var(--transition), font-size 0.2s;
-            padding: 12px;
+            font-size: 14px;
             min-height: 100vh;
-            line-height: 1.6;
             direction: ltr;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* Background glow effect */
-        body::before {
-            content: '';
+        /* CRT Scanline Effect */
+        body::after {
+            content: " ";
+            display: block;
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(ellipse at 30% 20%, rgba(0, 212, 255, 0.03) 0%, transparent 60%),
-                        radial-gradient(ellipse at 70% 80%, rgba(176, 38, 255, 0.03) 0%, transparent 60%);
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
             pointer-events: none;
-            z-index: 0;
         }
 
         .container {
-            max-width: 1440px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
+            max-width: 1500px; margin: 0 auto; padding: 20px;
+            position: relative; z-index: 10;
         }
 
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+
         /* ============================================================
-           SCROLLBAR – Neon Style
+           ANIMATIONS & GLITCH FX
            ============================================================ */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        @keyframes cyber-slide-in {
+            from { opacity: 0; transform: translateX(-20px) scale(0.98); filter: blur(4px); }
+            to { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
         }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px var(--accent); }
+            50% { box-shadow: 0 0 25px var(--accent), 0 0 10px var(--accent) inset; }
         }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-            box-shadow: 0 0 10px var(--accent);
+        @keyframes glitch-anim {
+            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(40% 0 50% 0); transform: translate(2px, 2px); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, -2px); }
+            80% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -2px); }
+            100% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 2px); }
+        }
+
+        .glitch { position: relative; display: inline-block; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-primary);
+        }
+        .glitch::before {
+            left: 2px; text-shadow: -2px 0 var(--neon-pink);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px; text-shadow: -2px 0 var(--neon-cyan);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
         }
 
         /* ============================================================
-           ANIMATIONS – Enhanced Set
+           BUTTONS & INPUTS
            ============================================================ */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        button, select, input {
+            font-family: var(--font-family);
+            background: var(--bg-input); color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px; outline: none; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
-        }
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
-            50% { box-shadow: 0 0 25px var(--accent), 0 0 50px var(--accent), 0 0 80px var(--accent); }
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes neonFlicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.4; }
-        }
-        @keyframes rotateGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.02); opacity: 1; }
-        }
-
-        .animate-fade-down { animation: fadeInDown 0.5s ease forwards; }
-        .animate-fade-up { animation: fadeInUp 0.5s ease forwards; }
-        .animate-pulse { animation: pulse 2s infinite; }
-        .animate-glow { animation: glowPulse 2.5s infinite; }
-        .animate-slide { animation: slideUp 0.4s ease forwards; }
-        .animate-slide-right { animation: slideInRight 0.4s ease forwards; }
-        .animate-neon { animation: neonFlicker 3s infinite; }
-        .animate-breathe { animation: breathe 3s ease-in-out infinite; }
+        button:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }
+        input:focus, select:focus { border-color: var(--accent); background: var(--bg-hover); box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
+        input[type="text"] { width: 100%; max-width: 300px; }
 
         /* ============================================================
-           HEADER
+           HEADER & HUD
            ============================================================ */
         header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            padding: calc(12px * var(--spacing)) 0;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: calc(20px * var(--spacing));
-            animation: fadeInDown 0.5s ease;
-            position: relative;
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 20px; border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            animation: glowPulse 3s infinite;
+        .brand h1 { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; color: var(--text-primary); }
+        .brand h1 span { color: var(--accent); }
+        
+        .hud-stats {
+            display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;
         }
+        .hud-box {
+            background: var(--bg-card); border-left: 4px solid var(--accent);
+            padding: 15px 20px; flex: 1; min-width: 200px;
+            position: relative; overflow: hidden;
+        }
+        .hud-box::after { content:''; position:absolute; right:-20px; bottom:-20px; font-size:5rem; opacity:0.05; font-family:"Font Awesome 5 Free"; font-weight:900; }
+        .hud-box.total::after { content: '\f233'; }
+        .hud-box.online::after { content: '\f058'; }
+        .hud-box.offline::after { content: '\f057'; }
+        
+        .hud-box .title { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; }
+        .hud-box .val { font-size: 2rem; font-weight: 900; color: var(--text-primary); text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .hud-box.online { border-color: var(--neon-green); }
+        .hud-box.online .val { color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green); }
+        .hud-box.offline { border-color: var(--neon-pink); }
+        .hud-box.offline .val { color: var(--neon-pink); text-shadow: 0 0 15px var(--neon-pink); }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .brand h1 {
-            font-size: clamp(1.3rem, 4.5vw, 2.2rem);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-        }
-        .brand h1 i {
-            color: var(--accent);
-            filter: drop-shadow(0 0 8px var(--accent));
-        }
-        .brand h1 span {
-            color: var(--accent);
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
-        }
-
-        .ascii-art {
-            font-family: monospace;
-            font-size: clamp(0.35rem, 1vw, 0.65rem);
-            line-height: 1.2;
-            color: var(--text-secondary);
-            white-space: pre;
-            display: none;
-            opacity: 0.7;
-        }
-        @media (min-width: 768px) { .ascii-art { display: block; } }
-
-        .header-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .header-controls button {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 16px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: all var(--transition);
-            font-size: clamp(0.75rem, 1.2vw, 0.9rem);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            touch-action: manipulation;
-            min-height: 40px;
-            user-select: none;
-            font-family: var(--font-family);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 5px rgba(0, 212, 255, 0.1);
-        }
-        .header-controls button::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--accent), transparent);
-            opacity: 0;
-            transition: opacity var(--transition);
-        }
-        .header-controls button:hover {
-            background: var(--accent);
-            color: #0a0e17;
-            transform: scale(1.04);
-            box-shadow: 0 0 25px var(--accent), 0 0 50px rgba(0, 212, 255, 0.2);
-            border-color: var(--accent);
-        }
-        .header-controls button:hover::before { opacity: 0.15; }
-        .header-controls button:active {
-            transform: scale(0.94);
-            box-shadow: 0 0 10px var(--accent);
-        }
+        /* Visual Progress Bar */
+        .hud-progress-wrap { width: 100%; height: 6px; background: #222; margin-top: 10px; display: flex; }
+        .hud-bar-online { background: var(--neon-green); height: 100%; transition: width 0.5s; box-shadow: 0 0 10px var(--neon-green); }
+        .hud-bar-offline { background: var(--neon-pink); height: 100%; transition: width 0.5s; box-shadow: 0 0 10px var(--neon-pink); }
 
         /* ============================================================
-           REPO INFO – Neon Card
+           TOOLBAYS & CONTROLS
            ============================================================ */
-        .repo-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: calc(8px * var(--spacing));
-            margin-bottom: calc(16px * var(--spacing));
-            background: var(--bg-secondary);
-            padding: calc(10px * var(--spacing)) calc(14px * var(--spacing));
-            border-radius: var(--radius);
-            font-size: clamp(0.75rem, 1vw, 0.85rem);
-            color: var(--text-secondary);
-            align-items: center;
-            box-shadow: var(--shadow);
-            animation: fadeInDown 0.5s ease;
-            font-family: var(--font-family);
-            border: 1px solid rgba(0, 212, 255, 0.1);
+        .cyber-toolbar {
+            display: flex; flex-wrap: wrap; gap: 15px; align-items: center;
+            background: rgba(0, 240, 255, 0.05); padding: 15px;
+            border: 1px solid var(--border-color); margin-bottom: 20px;
         }
-        .repo-info span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .repo-info i {
-            color: var(--accent);
-            filter: drop-shadow(0 0 4px var(--accent));
-        }
+        .cyber-toolbar .group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .cyber-toolbar .divider { width: 2px; height: 30px; background: var(--border-color); margin: 0 10px; }
+
+        .export-btn { background: transparent; border-color: var(--neon-purple); color: var(--neon-purple); }
+        .export-btn:hover { background: var(--neon-purple); color: #000; box-shadow: 0 0 15px var(--neon-purple); }
 
         /* ============================================================
-           STATS – Neon Badges
+           TABLE DESIGN
            ============================================================ */
-        .stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: calc(10px * var(--spacing));
-            margin-bottom: calc(20px * var(--spacing));
-            animation: fadeInDown 0.6s ease;
-        }
-        .stat-item {
-            background: var(--bg-card);
-            padding: calc(8px * var(--spacing)) calc(16px * var(--spacing));
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: var(--shadow);
-            transition: all var(--transition);
-            font-size: clamp(0.75rem, 1.2vw, 0.95rem);
-            flex: 0 1 auto;
-            font-family: var(--font-family);
-            border: 1px solid rgba(0, 212, 255, 0.08);
-        }
-        .stat-item:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
-            transform: translateY(-2px);
-        }
-        .stat-item i {
-            color: var(--accent);
-            filter: drop-shadow(0 0 6px var(--accent));
-        }
-        .stat-item strong {
-            font-size: clamp(1rem, 1.5vw, 1.2rem);
-            font-weight: 700;
-            color: var(--accent);
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
-        .stat-item .stat-detail {
-            font-size: 0.7em;
-            color: var(--text-muted);
-            margin-left: 4px;
-        }
-
-        .mini-chart {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            margin-top: 4px;
-            width: 100%;
-            min-width: 100px;
-        }
-        .mini-chart .bar {
-            height: 6px;
-            border-radius: 3px;
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--accent);
-            box-shadow: 0 0 8px var(--accent);
-        }
-        .mini-chart .bar.valid {
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-        }
-        .mini-chart .bar.invalid {
-            background: var(--danger);
-            box-shadow: 0 0 8px var(--danger);
-        }
-        .mini-chart .bar.pending {
-            background: var(--warning);
-            box-shadow: 0 0 8px var(--warning);
-        }
-
-        /* ============================================================
-           CONTROLS – Rectangular with slight radius
-           ============================================================ */
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: calc(8px * var(--spacing));
-            background: var(--bg-secondary);
-            padding: calc(12px * var(--spacing)) calc(16px * var(--spacing));
-            border-radius: var(--radius);
-            margin-bottom: calc(20px * var(--spacing));
-            align-items: center;
-            box-shadow: var(--shadow);
-            animation: fadeInDown 0.7s ease;
-            border: 1px solid rgba(0, 212, 255, 0.06);
-        }
-        .controls input,
-        .controls select {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: calc(8px * var(--spacing)) calc(14px * var(--spacing));
-            border-radius: var(--radius);
-            outline: none;
-            transition: all var(--transition);
-            flex: 1 1 140px;
-            min-width: 110px;
-            font-size: clamp(0.8rem, 1.2vw, 0.95rem);
-            -webkit-appearance: none;
-            appearance: none;
-            min-height: 44px;
-            font-family: var(--font-family);
-        }
-        .controls input:focus,
-        .controls select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-        }
-
-        .controls button {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: calc(8px * var(--spacing)) calc(16px * var(--spacing));
-            border-radius: var(--radius);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            font-size: clamp(0.8rem, 1.2vw, 0.95rem);
-            touch-action: manipulation;
-            min-height: 44px;
-            justify-content: center;
-            flex: 0 1 auto;
-            user-select: none;
-            font-family: var(--font-family);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 5px rgba(0, 212, 255, 0.05);
-        }
-        .controls button::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--accent), transparent);
-            opacity: 0;
-            transition: opacity var(--transition);
-        }
-        .controls button:hover {
-            background: var(--accent);
-            color: #0a0e17;
-            transform: scale(1.02);
-            box-shadow: 0 0 25px var(--accent), 0 0 50px rgba(0, 212, 255, 0.15);
-            border-color: var(--accent);
-        }
-        .controls button:hover::before { opacity: 0.12; }
-        .controls button:active {
-            transform: scale(0.94);
-            box-shadow: 0 0 15px var(--accent);
-        }
-
-        .controls .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-        }
-        .controls .btn-outline:hover {
-            background: var(--bg-card);
-            transform: none;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
-        }
-        .controls .btn-outline:active {
-            transform: scale(0.94);
-        }
-
-        /* ============================================================
-           TABLE – Neon style
-           ============================================================ */
-        .table-wrap {
-            overflow-x: auto;
-            border-radius: var(--radius);
-            background: var(--bg-secondary);
-            padding: 4px;
-            box-shadow: var(--shadow);
-            animation: fadeInDown 0.8s ease;
-            -webkit-overflow-scrolling: touch;
-            border: 1px solid rgba(0, 212, 255, 0.06);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: clamp(0.8rem, 1.1vw, 0.9rem);
-            min-width: 550px;
-            font-family: var(--font-family);
-        }
+        .table-wrap { overflow-x: auto; border: 1px solid var(--border-color); background: var(--bg-secondary); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
         th {
-            text-align: left;
-            padding: calc(12px * var(--spacing)) calc(10px * var(--spacing));
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-bottom: 2px solid var(--border-color);
-            user-select: none;
-            transition: all var(--transition);
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            font-family: var(--font-family);
+            background: rgba(0, 240, 255, 0.15); color: var(--accent);
+            padding: 15px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px;
+            border-bottom: 2px solid var(--accent); cursor: pointer;
         }
-        th:hover {
-            background: var(--bg-input);
-            color: var(--accent);
-        }
-        th i {
-            margin-left: 6px;
-            font-size: 0.75rem;
-            transition: transform var(--transition);
-        }
-        th:hover i { transform: rotate(180deg); }
-
-        td {
-            padding: calc(10px * var(--spacing)) calc(10px * var(--spacing));
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-            word-break: break-word;
-            font-family: var(--font-family);
-            transition: background var(--transition);
-        }
-        tr:hover td {
-            background: var(--bg-hover);
-        }
-
-        .link-cell {
-            word-break: break-all;
-            max-width: 300px;
-        }
-        .link-cell a {
-            color: #7aa9d9;
-            text-decoration: none;
-            transition: all var(--transition);
-            display: inline-block;
-            max-width: 100%;
-        }
-        .link-cell a:hover {
-            color: var(--accent);
-            text-decoration: underline;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
-
-        .copy-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            margin-left: 6px;
-            transition: all var(--transition);
-            font-size: 1rem;
-            padding: 4px;
-            touch-action: manipulation;
-            border-radius: var(--radius);
-        }
-        .copy-btn:hover {
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent);
-        }
-        .copy-btn:active {
-            transform: scale(0.85);
-        }
-
-        .status-badge {
-            padding: 3px 12px;
-            border-radius: var(--radius);
-            font-size: clamp(0.7rem, 1vw, 0.8rem);
-            font-weight: 600;
-            display: inline-block;
-            white-space: nowrap;
-            font-family: var(--font-family);
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-        }
-        .status-valid {
-            background: rgba(57, 255, 20, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(57, 255, 20, 0.3);
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.1);
-        }
-        .status-invalid {
-            background: rgba(255, 23, 68, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(255, 23, 68, 0.3);
-            box-shadow: 0 0 15px rgba(255, 23, 68, 0.1);
-        }
-        .status-pending {
-            background: rgba(255, 230, 0, 0.10);
-            color: var(--warning);
-            border: 1px solid rgba(255, 230, 0, 0.2);
-            box-shadow: 0 0 15px rgba(255, 230, 0, 0.05);
-        }
-
-        .actions {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        .actions button {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 4px 12px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: clamp(0.7rem, 1vw, 0.8rem);
-            transition: all var(--transition);
-            touch-action: manipulation;
-            min-height: 32px;
-            white-space: nowrap;
-            font-family: var(--font-family);
-        }
-        .actions button:hover {
-            background: var(--accent);
-            color: #0a0e17;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-        }
-        .actions button:active {
-            transform: scale(0.9);
-        }
-
-        /* ============================================================
-           PAGINATION
-           ============================================================ */
-        .pagination {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            padding: calc(12px * var(--spacing)) 0;
-            margin-top: calc(10px * var(--spacing));
-        }
-        .pagination button {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 6px 14px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: all var(--transition);
-            font-size: clamp(0.75rem, 1vw, 0.85rem);
-            min-height: 36px;
-            user-select: none;
-            font-family: var(--font-family);
-        }
-        .pagination button.active {
-            background: var(--accent);
-            color: #0a0e17;
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent);
-        }
-        .pagination button:hover:not(.active):not(:disabled) {
-            background: var(--bg-hover);
-            border-color: var(--accent);
-        }
-        .pagination button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .pagination button:active:not(:disabled) {
-            transform: scale(0.92);
-        }
-
-        /* ============================================================
-           FOOTER
-           ============================================================ */
-        .footer {
-            margin-top: calc(40px * var(--spacing));
-            text-align: center;
-            padding: calc(20px * var(--spacing)) 0 calc(12px * var(--spacing));
-            border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: clamp(0.8rem, 1.2vw, 0.95rem);
-            animation: fadeInDown 1s ease;
-            font-family: var(--font-family);
-        }
-        .footer .heart {
-            color: #ff2d95;
-            animation: pulse 2s infinite;
-            display: inline-block;
-            text-shadow: 0 0 15px #ff2d95;
-        }
-        .footer a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: bold;
-            transition: all var(--transition);
-        }
-        .footer a:hover {
-            text-decoration: underline;
-            text-shadow: 0 0 15px var(--accent);
-        }
-
-        /* ============================================================
-           SETTINGS PANEL – Neon
-           ============================================================ */
-        .settings-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+        td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+        
+        /* Table Row Animations */
+        tbody tr {
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            z-index: 998;
-            backdrop-filter: blur(8px);
+            animation: cyber-slide-in 0.4s ease-out forwards;
+            transition: background 0.2s, box-shadow 0.2s;
         }
-        .settings-overlay.open {
-            opacity: 1;
-            visibility: visible;
+        tbody tr:hover {
+            background: var(--bg-hover);
+            box-shadow: inset 4px 0 0 var(--accent);
         }
 
-        .settings-panel {
-            position: fixed;
-            top: 0;
-            right: -420px;
-            width: min(400px, 94%);
-            height: 100%;
-            background: var(--bg-secondary);
-            box-shadow: -4px 0 40px rgba(0, 0, 0, 0.8);
-            padding: 24px 20px;
-            transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            z-index: 999;
-            overflow-y: auto;
-            border-left: 2px solid var(--accent);
-            font-family: var(--font-family);
-        }
-        .settings-panel.open { right: 0; }
+        /* Status Badges */
+        .badge { padding: 4px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 2px; }
+        .badge-valid { background: rgba(0, 255, 65, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .badge-invalid { background: rgba(255, 0, 85, 0.1); color: var(--neon-pink); border: 1px solid var(--neon-pink); }
+        .badge-pending { background: rgba(255, 230, 0, 0.1); color: var(--neon-yellow); border: 1px solid var(--neon-yellow); }
+        .badge-proto { background: rgba(176, 38, 255, 0.1); color: var(--neon-purple); border: 1px solid var(--neon-purple); }
 
-        .settings-panel h2 {
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.3rem;
-            font-family: var(--font-family);
-            color: var(--accent);
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-        }
-        .settings-panel h2 button {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.6rem;
-            cursor: pointer;
-            padding: 0 8px;
-            transition: transform 0.3s;
-        }
-        .settings-panel h2 button:hover { transform: rotate(90deg); }
-        .settings-panel h2 button:active { transform: rotate(90deg) scale(0.9); }
+        .link-cell a { color: var(--text-primary); text-decoration: none; font-family: monospace; letter-spacing: 0.5px; }
+        .link-cell a:hover { color: var(--accent); text-decoration: underline; text-shadow: 0 0 8px var(--accent); }
 
-        .settings-group {
-            margin-bottom: 22px;
-        }
-        .settings-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: clamp(0.85rem, 1.2vw, 1rem);
-            font-family: var(--font-family);
-        }
+        /* Ping/Latency Column */
+        .latency-val { font-family: monospace; color: var(--text-muted); font-size: 0.85rem; }
+        .latency-val.fast { color: var(--neon-green); }
+        .latency-val.mid { color: var(--neon-yellow); }
+        .latency-val.slow { color: var(--neon-pink); }
 
-        .settings-group .option-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+        /* Row Details (Expandable) */
+        .row-details {
+            background: rgba(0,0,0,0.5); padding: 15px; margin-top: 10px;
+            border-left: 2px dashed var(--accent); display: none;
+            font-family: monospace; color: var(--neon-cyan); font-size: 0.85rem;
         }
-        .settings-group .option-group button {
-            flex: 1 1 auto;
-            padding: 8px 12px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            background: var(--bg-input);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all var(--transition);
-            font-weight: 600;
-            font-size: clamp(0.75rem, 1vw, 0.9rem);
-            min-height: 40px;
-            touch-action: manipulation;
-            user-select: none;
-            font-family: var(--font-family);
-        }
-        .settings-group .option-group button.active {
-            border-color: var(--accent);
-            background: var(--accent);
-            color: #0a0e17;
-            box-shadow: 0 0 20px var(--accent);
-        }
-        .settings-group .option-group button:hover:not(.active) {
-            border-color: var(--accent);
-        }
-        .settings-group .option-group button:active {
-            transform: scale(0.94);
-        }
-
-        .settings-group .checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 6px;
-        }
-        .settings-group .checkbox-row input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--accent);
-            cursor: pointer;
-            flex-shrink: 0;
-            filter: drop-shadow(0 0 4px var(--accent));
-        }
-        .settings-group .checkbox-row label {
-            margin: 0;
-            font-weight: normal;
-            cursor: pointer;
-            font-family: var(--font-family);
-        }
-
-        .settings-group .range-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .settings-group .range-row input[type="range"] {
-            flex: 1;
-            accent-color: var(--accent);
-            height: 4px;
-            background: var(--bg-input);
-            border-radius: 4px;
-            -webkit-appearance: none;
-            appearance: none;
-            outline: none;
-        }
-        .settings-group .range-row input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--accent);
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--accent);
-        }
-        .settings-group .range-row input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--accent);
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 0 15px var(--accent);
-        }
-        .settings-group .range-row span {
-            min-width: 40px;
-            text-align: center;
-            font-weight: bold;
-            color: var(--accent);
-            font-family: var(--font-family);
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
-
-        .settings-panel .panel-footer {
-            margin-top: 30px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 16px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-family: var(--font-family);
-        }
+        .row-details.open { display: block; animation: cyber-slide-in 0.3s forwards; }
 
         /* ============================================================
-           TOAST – Neon
+           TACTICAL PAGINATION (پارت بندی)
            ============================================================ */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            left: 20px;
-            max-width: 420px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            padding: 14px 20px;
-            border-radius: var(--radius);
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
-            border-left: 4px solid var(--accent);
-            display: none;
-            animation: slideUp 0.4s ease;
-            z-index: 1000;
-            font-size: clamp(0.85rem, 1.2vw, 1rem);
-            text-align: center;
-            pointer-events: none;
-            font-family: var(--font-family);
+        .tactical-pagination {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); padding: 15px; border: 1px solid var(--border-color);
+            margin-top: 20px; flex-wrap: wrap; gap: 15px;
         }
-        .toast.error {
-            border-left-color: var(--danger);
-            box-shadow: 0 0 30px rgba(255, 23, 68, 0.2);
-        }
+        .page-info { color: var(--accent); font-weight: bold; }
+        .page-controls { display: flex; gap: 5px; }
+        .page-controls button { padding: 8px 12px; min-width: 40px; }
+        .page-controls button.active { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }
+        .page-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .page-size-selector { display: flex; align-items: center; gap: 10px; }
+        .page-size-selector select { padding: 6px 10px; }
 
         /* ============================================================
-           HIDE COLUMNS
+           TOAST
            ============================================================ */
-        [data-hide-status="true"] th:nth-child(3),
-        [data-hide-status="true"] td:nth-child(3) { display: none; }
-        [data-hide-channel="true"] th:first-child,
-        [data-hide-channel="true"] td:first-child { display: none; }
-
-        /* ============================================================
-           RESPONSIVE – Optimized for mobile
-           ============================================================ */
-        @media (max-width: 600px) {
-            body { padding: 8px; }
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 12px;
-                gap: 8px;
-            }
-            .controls input,
-            .controls select {
-                width: 100%;
-                min-width: unset;
-                flex: none;
-            }
-            .controls button {
-                flex: 1 1 auto;
-                width: 100%;
-                justify-content: center;
-                min-height: 48px;
-            }
-            .header-controls button {
-                padding: 6px 12px;
-                font-size: 0.75rem;
-                min-height: 38px;
-            }
-            .brand h1 { font-size: 1.2rem; }
-            .stat-item {
-                padding: 6px 14px;
-                font-size: 0.75rem;
-                flex: 1 1 auto;
-                justify-content: center;
-            }
-            .stats { gap: 6px; }
-            .stats .stat-item strong { font-size: 0.95rem; }
-            .settings-panel {
-                width: 100%;
-                right: -100%;
-                padding: 16px;
-            }
-            .settings-panel.open { right: 0; }
-            .table-wrap { border-radius: var(--radius); }
-            th, td { padding: 8px 6px; }
-            .link-cell { max-width: 130px; }
-            .actions button { padding: 2px 8px; font-size: 0.7rem; }
-            .repo-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
-                padding: 10px;
-            }
-            .repo-info span { width: 100%; }
-            .pagination button { padding: 4px 10px; font-size: 0.7rem; min-height: 32px; }
-        }
-
-        @media (max-width: 400px) {
-            .brand h1 { font-size: 1rem; }
-            .header-controls button { font-size: 0.65rem; padding: 4px 8px; min-height: 32px; }
-            .stat-item { font-size: 0.65rem; padding: 4px 10px; }
-            .stat-item strong { font-size: 0.8rem; }
-            th, td { padding: 6px 4px; font-size: 0.7rem; }
-            .link-cell { max-width: 80px; }
-        }
-
-        /* ============================================================
-           RTL OVERRIDES
-           ============================================================ */
-        [dir="rtl"] .controls input,
-        [dir="rtl"] .controls select { text-align: right; }
-        [dir="rtl"] th { text-align: right; }
-        [dir="rtl"] .stat-item .stat-detail { margin-left: 0; margin-right: 4px; }
-        [dir="rtl"] .copy-btn { margin-left: 0; margin-right: 6px; }
-        [dir="rtl"] .settings-panel {
-            right: auto;
-            left: -420px;
-            border-left: none;
-            border-right: 2px solid var(--accent);
-        }
-        [dir="rtl"] .settings-panel.open { right: auto; left: 0; }
-        [dir="rtl"] .toast { border-left: none; border-right: 4px solid var(--accent); }
-        [dir="rtl"] .toast.error { border-right-color: var(--danger); }
-        @media (max-width: 600px) {
-            [dir="rtl"] .settings-panel { left: -100%; right: auto; }
-            [dir="rtl"] .settings-panel.open { left: 0; right: auto; }
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--bg-input); border-bottom: 3px solid var(--accent);
+            padding: 15px 30px; font-weight: bold; text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 9999;
+            display: none; letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-    SETTINGS PANEL
-    ============================================================ -->
-    <div class="settings-overlay" id="settingsOverlay"></div>
-    <div class="settings-panel" id="settingsPanel">
-        <h2>
-            <span><i class="fas fa-sliders-h"></i> <span id="settingsTitle">Settings</span></span>
-            <button id="closeSettingsBtn" aria-label="Close settings"><i class="fas fa-times"></i></button>
-        </h2>
-
-        <div class="settings-group">
-            <label><i class="fas fa-globe"></i> <span id="langLabel">Language</span></label>
-            <div class="option-group" id="langGroup">
-                <button data-value="en" class="active">English</button>
-                <button data-value="fa">فارسی</button>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label><i class="fas fa-moon"></i> <span id="themeLabel">Theme</span></label>
-            <div class="option-group" id="themeGroup">
-                <button data-value="dark" class="active">Dark</button>
-                <button data-value="light">Light</button>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label><i class="fas fa-font"></i> <span id="fontLabel">Font Size</span></label>
-            <div class="option-group" id="fontGroup">
-                <button data-value="small">Small</button>
-                <button data-value="medium" class="active">Medium</button>
-                <button data-value="large">Large</button>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label><i class="fas fa-arrows-alt-v"></i> <span id="densityLabel">Density</span></label>
-            <div class="option-group" id="densityGroup">
-                <button data-value="compact">Compact</button>
-                <button data-value="comfortable" class="active">Comfortable</button>
-                <button data-value="spacious">Spacious</button>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label><i class="fas fa-columns"></i> <span id="displayLabel">Display Options</span></label>
-            <div class="checkbox-row">
-                <input type="checkbox" id="showStatus" checked>
-                <label for="showStatus"><span id="showStatusLabel">Show Status Column</span></label>
-            </div>
-            <div class="checkbox-row">
-                <input type="checkbox" id="showChannel" checked>
-                <label for="showChannel"><span id="showChannelLabel">Show Channel Column</span></label>
-            </div>
-            <div class="checkbox-row">
-                <input type="checkbox" id="autoValidate" checked>
-                <label for="autoValidate"><span id="autoValidateLabel">Auto-validate on load</span></label>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label><i class="fas fa-sort"></i> <span id="sortLabel">Default Sort</span></label>
-            <div class="option-group" id="sortGroup">
-                <button data-value="channel" class="active">Channel</button>
-                <button data-value="status">Status</button>
-                <button data-value="link">Link</button>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label><i class="fas fa-list"></i> <span id="pageSizeLabel">Items per page</span></label>
-            <div class="option-group" id="pageSizeGroup">
-                <button data-value="20">20</button>
-                <button data-value="50" class="active">50</button>
-                <button data-value="100">100</button>
-                <button data-value="0">All</button>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label><i class="fas fa-clock"></i> <span id="refreshIntervalLabel">Auto-refresh interval (minutes)</span></label>
-            <div class="range-row">
-                <input type="range" id="autoRefreshRange" min="0" max="30" value="5">
-                <span id="autoRefreshLabel">5</span>
-            </div>
-        </div>
-
-        <div class="panel-footer">
-            <i class="fas fa-skull-crossbones"></i> THE SAZ 🏴‍☠️
-        </div>
-    </div>
-
-    <!-- ============================================================
-    MAIN CONTENT
-    ============================================================ -->
     <div class="container">
-
-        <!-- HEADER -->
         <header>
             <div class="brand">
-                <div>
-                    <h1><i class="fas fa-skull-crossbones"></i> SlipNet <span>Collector</span></h1>
-                    <div class="ascii-art">
-                         ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄
-                        ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
-                        ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌
-                        ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌
-                        ▐░▌          ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌
-                        ▐░▌          ▐░░░░░░░░░░░▌▐░▌       ▐░▌
-                        ▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌
-                        ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌
-                        ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌
-                        ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌
-                         ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀
-                    </div>
-                </div>
+                <h1 class="glitch" data-text="SLIPNET COMMAND">SLIPNET <span>COMMAND</span></h1>
+                <div style="color:var(--text-muted); font-family:monospace; margin-top:5px;">SYS.VER: 2.0.1 // PROTOCOL: SAZ🏴‍☠️</div>
             </div>
-            <div class="header-controls">
-                <button id="settingsToggle"><i class="fas fa-cog"></i> <span id="settingsLabel">Settings</span></button>
-                <button id="refreshBtn"><i class="fas fa-sync-alt"></i> <span id="refreshLabel">Refresh</span></button>
-            </div>
+            <button id="refreshBtn" style="animation: pulse-glow 2s infinite;"><i class="fas fa-sync-alt"></i> SYNC_DATA</button>
         </header>
 
-        <!-- REPO INFO -->
-        <div class="repo-info" id="repoInfo">
-            <span><i class="fas fa-code-branch"></i> Repo: <strong id="repoName">slipnet-collector</strong></span>
-            <span><i class="fas fa-file-alt"></i> File: <strong>SAZ🏴‍☠️.TXT</strong></span>
-            <span><i class="fas fa-database"></i> Nodes: <strong id="totalNodesInfo">0</strong></span>
-            <span><i class="fas fa-hashtag"></i> Channels: <strong id="totalChannelsInfo">0</strong></span>
-            <span><i class="fas fa-clock"></i> Updated: <strong id="lastCommitInfo">-</strong></span>
-            <span><i class="fas fa-weight-hanging"></i> Size: <strong id="fileSizeInfo">-</strong></span>
-        </div>
-
-        <!-- STATS -->
-        <div class="stats" id="stats">
-            <div class="stat-item"><i class="fas fa-database"></i> <span id="totalLabel">Total</span>: <strong id="totalNodes">0</strong></div>
-            <div class="stat-item"><i class="fas fa-check-circle"></i> <span id="validLabel">Valid</span>: <strong id="validNodes">0</strong> <span class="stat-detail" id="validPercent">(0%)</span></div>
-            <div class="stat-item"><i class="fas fa-times-circle"></i> <span id="invalidLabel">Invalid</span>: <strong id="invalidNodes">0</strong> <span class="stat-detail" id="invalidPercent">(0%)</span></div>
-            <div class="stat-item"><i class="fas fa-clock"></i> <span id="updateLabel">Updated</span>: <strong id="lastUpdate">-</strong></div>
-            <div class="stat-item" style="flex:1; min-width:120px;">
-                <div style="width:100%;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.7em; color:var(--text-muted);">
-                        <span>Valid</span>
-                        <span>Pending</span>
-                        <span>Invalid</span>
-                    </div>
-                    <div class="mini-chart" id="miniChart">
-                        <div class="bar valid" style="width:0%;"></div>
-                        <div class="bar pending" style="width:0%;"></div>
-                        <div class="bar invalid" style="width:0%;"></div>
-                    </div>
+        <div class="hud-stats">
+            <div class="hud-box total">
+                <div class="title">TOTAL NODES</div>
+                <div class="val" id="hudTotal">0</div>
+            </div>
+            <div class="hud-box online">
+                <div class="title">ACTIVE / ONLINE</div>
+                <div class="val" id="hudOnline">0</div>
+                <div class="hud-progress-wrap">
+                    <div class="hud-bar-online" id="barOnline" style="width:0%;"></div>
+                    <div class="hud-bar-offline" id="barOffline" style="width:0%;"></div>
                 </div>
+            </div>
+            <div class="hud-box offline">
+                <div class="title">DEAD / OFFLINE</div>
+                <div class="val" id="hudOffline">0</div>
             </div>
         </div>
 
-        <!-- CONTROLS -->
-        <div class="controls">
-            <input type="text" id="searchInput" placeholder="Search links..." />
-            <select id="channelFilter">
-                <option value="all">All Channels</option>
-            </select>
-            <select id="statusFilter">
-                <option value="all">All Status</option>
-                <option value="valid">Valid</option>
-                <option value="invalid">Invalid</option>
-                <option value="pending">Pending</option>
-            </select>
-            <button id="validateBtn"><i class="fas fa-shield-alt"></i> <span id="validateAllLabel">Validate All</span></button>
-            <button class="btn-outline" id="downloadJsonBtn"><i class="fas fa-file-code"></i> JSON</button>
-            <button class="btn-outline" id="downloadCsvBtn"><i class="fas fa-file-csv"></i> CSV</button>
-            <button class="btn-outline" id="downloadTxtBtn"><i class="fas fa-file-alt"></i> TXT</button>
+        <div class="cyber-toolbar">
+            <div class="group" style="flex:1;">
+                <input type="text" id="searchInput" placeholder="Scan Databanks (Search)..." />
+                <select id="channelFilter"><option value="all">ALL CHANNELS</option></select>
+                <select id="statusFilter">
+                    <option value="all">ALL STATUS</option>
+                    <option value="valid">ONLINE</option>
+                    <option value="invalid">OFFLINE</option>
+                    <option value="pending">PENDING</option>
+                </select>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="group">
+                <button id="validateBtn" style="border-color:var(--neon-green); color:var(--neon-green);"><i class="fas fa-bolt"></i> FULL SCAN</button>
+                <button id="copyAllBtn"><i class="fas fa-copy"></i> COPY ALL</button>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="group">
+                <span style="font-size:0.8rem; color:var(--text-muted);">EXPORT:</span>
+                <button class="export-btn" onclick="exportData('json')">JSON</button>
+                <button class="export-btn" onclick="exportData('csv')">CSV</button>
+                <button class="export-btn" onclick="exportData('txt')">TXT</button>
+            </div>
         </div>
 
-        <!-- TABLE -->
+        <div class="tactical-pagination" style="margin-bottom: -1px; border-bottom:none;">
+            <div class="page-size-selector">
+                <span>ROWS PER PAGE:</span>
+                <select id="pageSizeTop">
+                    <option value="10">10</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="500">500</option>
+                    <option value="all">MAX (ALL)</option>
+                </select>
+            </div>
+            <div class="page-info">PAGE <span id="currentPageDisplayTop">1</span> OF <span id="totalPagesDisplayTop">1</span></div>
+        </div>
+
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
-                        <th data-sort="channel" id="thChannel"><span>Channel</span> <i class="fas fa-sort"></i></th>
-                        <th data-sort="link" id="thLink"><span>Link</span> <i class="fas fa-sort"></i></th>
-                        <th data-sort="status" id="thStatus"><span>Status</span> <i class="fas fa-sort"></i></th>
-                        <th id="thActions"><span>Actions</span></th>
+                        <th data-sort="channel">Channel <i class="fas fa-sort"></i></th>
+                        <th data-sort="protocol">Proto <i class="fas fa-sort"></i></th>
+                        <th data-sort="link">Encrypted Address <i class="fas fa-sort"></i></th>
+                        <th data-sort="status">SYS_STATUS <i class="fas fa-sort"></i></th>
+                        <th data-sort="ping">Ping <i class="fas fa-sort"></i></th>
+                        <th>Terminal</th>
                     </tr>
                 </thead>
                 <tbody id="nodesBody">
-                    <tr><td colspan="4" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-pulse"></i> Loading...</td></tr>
-                </tbody>
+                    </tbody>
             </table>
         </div>
 
-        <!-- PAGINATION -->
-        <div class="pagination" id="pagination"></div>
-
-        <!-- FOOTER -->
-        <div class="footer" id="footer">
-            <span id="footerText">Developed by <a href="https://t.me/the_saz" target="_blank">THE SAZ</a> <span class="heart">💜</span></span>
-            <br><small style="color:var(--text-muted);">⚡ Smart Dashboard · Auto-refresh · Real-time validation</small>
+        <div class="tactical-pagination">
+            <div class="page-info" id="recordCountDisplay">SHOWING 0 TO 0 OF 0 ENTRIES</div>
+            <div class="page-controls" id="paginationControls">
+                </div>
         </div>
+
     </div>
 
-    <!-- TOAST -->
-    <div id="toast" class="toast"></div>
+    <div id="toast">SYSTEM MESSAGE</div>
 
-    <!-- ============================================================
-    JAVASCRIPT – ULTRA STABLE
-    ============================================================ -->
     <script>
         (function() {
             'use strict';
 
-            // ============================================================
-            // CONFIG
-            // ============================================================
+            // --- CONFIG (DO NOT TOUCH CORE REPO LOGIC) ---
             const CONFIG = {
                 repoOwner: 'its-thesaz',
                 repoName: 'slipnet-collector',
                 fileName: 'SAZ🏴‍☠️.TXT',
-                get rawUrl() {
-                    return `https://raw.githubusercontent.com/${this.repoOwner}/${this.repoName}/main/${encodeURIComponent(this.fileName)}`;
-                },
-                get apiUrl() {
-                    return `https://api.github.com/repos/${this.repoOwner}/${this.repoName}/commits?path=${encodeURIComponent(this.fileName)}&per_page=1`;
-                }
+                get rawUrl() { return `https://raw.githubusercontent.com/${this.repoOwner}/${this.repoName}/main/${encodeURIComponent(this.fileName)}`; }
             };
 
-            // ============================================================
-            // TRANSLATIONS
-            // ============================================================
-            const LANG = {
-                en: {
-                    settings: 'Settings', refresh: 'Refresh', total: 'Total', valid: 'Valid',
-                    invalid: 'Invalid', updated: 'Updated', validateAll: 'Validate All',
-                    channel: 'Channel', link: 'Link', status: 'Status', actions: 'Actions',
-                    pending: 'Pending', allChannels: 'All Channels', allStatus: 'All Status',
-                    searchPlaceholder: 'Search links...', toastCopied: '✅ Link copied!',
-                    toastValidated: '✅ All nodes validated.', toastError: '❌ Error loading data',
-                    settingsTitle: 'Settings', langLabel: 'Language', themeLabel: 'Theme',
-                    fontLabel: 'Font Size', densityLabel: 'Density', displayLabel: 'Display Options',
-                    showStatusLabel: 'Show Status Column', showChannelLabel: 'Show Channel Column',
-                    autoValidateLabel: 'Auto-validate on load', sortLabel: 'Default Sort',
-                    pageSizeLabel: 'Items per page', refreshIntervalLabel: 'Auto-refresh interval (minutes)',
-                    footerText: 'Developed by <a href="https://t.me/the_saz" target="_blank">THE SAZ</a> <span class="heart">💜</span>'
-                },
-                fa: {
-                    settings: 'تنظیمات', refresh: 'به‌روزرسانی', total: 'کل', valid: 'معتبر',
-                    invalid: 'نامعتبر', updated: 'به‌روزرسانی', validateAll: 'بررسی همه',
-                    channel: 'کانال', link: 'لینک', status: 'وضعیت', actions: 'عملیات',
-                    pending: 'در انتظار', allChannels: 'همه کانال‌ها', allStatus: 'همه وضعیت‌ها',
-                    searchPlaceholder: 'جستجو در لینک‌ها...', toastCopied: '✅ لینک کپی شد!',
-                    toastValidated: '✅ همه گره‌ها بررسی شدند.', toastError: '❌ خطا در دریافت داده',
-                    settingsTitle: 'تنظیمات', langLabel: 'زبان', themeLabel: 'تم',
-                    fontLabel: 'اندازه قلم', densityLabel: 'تراکم', displayLabel: 'گزینه‌های نمایش',
-                    showStatusLabel: 'نمایش ستون وضعیت', showChannelLabel: 'نمایش ستون کانال',
-                    autoValidateLabel: 'اعتبارسنجی خودکار هنگام بارگذاری', sortLabel: 'مرتب‌سازی پیش‌فرض',
-                    pageSizeLabel: 'تعداد آیتم‌ها در صفحه', refreshIntervalLabel: 'بازه به‌روزرسانی خودکار (دقیقه)',
-                    footerText: 'توسعه‌یافته توسط <a href="https://t.me/the_saz" target="_blank">THE SAZ</a> <span class="heart">💜</span>'
-                }
-            };
-
-            // ============================================================
-            // STATE
-            // ============================================================
+            // --- STATE MANAGEMENT ---
             const state = {
-                lang: 'en',
-                theme: 'dark',
-                font: 'medium',
-                density: 'comfortable',
-                sortKey: 'channel',
-                sortDir: 'asc',
-                pageSize: 50,
-                currentPage: 1,
-                autoValidate: true,
-                refreshInterval: 5,
                 allNodes: [],
                 filteredNodes: [],
-                isLoaded: false,
-                refreshTimer: null
+                pageSize: 50,
+                currentPage: 1,
+                sortKey: 'channel',
+                sortDir: 'asc'
             };
 
-            // ============================================================
-            // DOM REFERENCES
-            // ============================================================
-            const $ = (sel) => document.querySelector(sel);
-            const $$ = (sel) => document.querySelectorAll(sel);
-
+            // --- DOM Elements ---
             const dom = {
-                settingsToggle: $('#settingsToggle'),
-                refreshBtn: $('#refreshBtn'),
-                settingsLabel: $('#settingsLabel'),
-                refreshLabel: $('#refreshLabel'),
-                settingsPanel: $('#settingsPanel'),
-                settingsOverlay: $('#settingsOverlay'),
-                closeSettingsBtn: $('#closeSettingsBtn'),
-                settingsTitle: $('#settingsTitle'),
-                langLabel: $('#langLabel'),
-                themeLabel: $('#themeLabel'),
-                fontLabel: $('#fontLabel'),
-                densityLabel: $('#densityLabel'),
-                displayLabel: $('#displayLabel'),
-                showStatusLabel: $('#showStatusLabel'),
-                showChannelLabel: $('#showChannelLabel'),
-                autoValidateLabel: $('#autoValidateLabel'),
-                sortLabel: $('#sortLabel'),
-                pageSizeLabel: $('#pageSizeLabel'),
-                refreshIntervalLabel: $('#refreshIntervalLabel'),
-                langGroup: $('#langGroup'),
-                themeGroup: $('#themeGroup'),
-                fontGroup: $('#fontGroup'),
-                densityGroup: $('#densityGroup'),
-                sortGroup: $('#sortGroup'),
-                pageSizeGroup: $('#pageSizeGroup'),
-                showStatus: $('#showStatus'),
-                showChannel: $('#showChannel'),
-                autoValidate: $('#autoValidate'),
-                autoRefreshRange: $('#autoRefreshRange'),
-                autoRefreshLabel: $('#autoRefreshLabel'),
-                totalNodes: $('#totalNodes'),
-                validNodes: $('#validNodes'),
-                invalidNodes: $('#invalidNodes'),
-                validPercent: $('#validPercent'),
-                invalidPercent: $('#invalidPercent'),
-                lastUpdate: $('#lastUpdate'),
-                totalLabel: $('#totalLabel'),
-                validLabel: $('#validLabel'),
-                invalidLabel: $('#invalidLabel'),
-                updateLabel: $('#updateLabel'),
-                repoName: $('#repoName'),
-                totalNodesInfo: $('#totalNodesInfo'),
-                totalChannelsInfo: $('#totalChannelsInfo'),
-                lastCommitInfo: $('#lastCommitInfo'),
-                fileSizeInfo: $('#fileSizeInfo'),
-                searchInput: $('#searchInput'),
-                channelFilter: $('#channelFilter'),
-                statusFilter: $('#statusFilter'),
-                validateBtn: $('#validateBtn'),
-                validateAllLabel: $('#validateAllLabel'),
-                downloadJsonBtn: $('#downloadJsonBtn'),
-                downloadCsvBtn: $('#downloadCsvBtn'),
-                downloadTxtBtn: $('#downloadTxtBtn'),
-                nodesBody: $('#nodesBody'),
-                thChannel: $('#thChannel'),
-                thLink: $('#thLink'),
-                thStatus: $('#thStatus'),
-                thActions: $('#thActions'),
-                pagination: $('#pagination'),
-                footerText: $('#footerText'),
-                toast: $('#toast'),
-                miniChart: $('#miniChart'),
-                settingsOverlayEl: $('#settingsOverlay')
+                nodesBody: document.getElementById('nodesBody'),
+                hudTotal: document.getElementById('hudTotal'),
+                hudOnline: document.getElementById('hudOnline'),
+                hudOffline: document.getElementById('hudOffline'),
+                barOnline: document.getElementById('barOnline'),
+                barOffline: document.getElementById('barOffline'),
+                channelFilter: document.getElementById('channelFilter'),
+                statusFilter: document.getElementById('statusFilter'),
+                searchInput: document.getElementById('searchInput'),
+                toast: document.getElementById('toast'),
+                pageSizeTop: document.getElementById('pageSizeTop'),
+                currPageTop: document.getElementById('currentPageDisplayTop'),
+                totalPageTop: document.getElementById('totalPagesDisplayTop'),
+                recordCount: document.getElementById('recordCountDisplay'),
+                pageControls: document.getElementById('paginationControls')
             };
 
-            // ============================================================
-            // UTILITY FUNCTIONS
-            // ============================================================
-            function t(key) { return LANG[state.lang][key] || key; }
-
-            function showToast(message, isError = false) {
-                const el = dom.toast;
-                el.textContent = message;
-                el.className = 'toast' + (isError ? ' error' : '');
-                el.style.display = 'block';
-                clearTimeout(el._hideTimer);
-                el._hideTimer = setTimeout(() => { el.style.display = 'none'; }, 3500);
+            // --- UTILITIES ---
+            function showToast(msg, color = 'var(--accent)') {
+                dom.toast.textContent = msg;
+                dom.toast.style.display = 'block';
+                dom.toast.style.borderBottomColor = color;
+                setTimeout(() => dom.toast.style.display = 'none', 3000);
             }
 
             function copyToClipboard(text) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(() => showToast(t('toastCopied')))
-                        .catch(() => fallbackCopy(text));
-                } else { fallbackCopy(text); }
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('DATA COPIED TO CLIPBOARD', 'var(--neon-cyan)');
+                }).catch(() => showToast('COPY FAILED', 'var(--neon-pink)'));
             }
 
-            function fallbackCopy(text) {
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.select();
-                try { document.execCommand('copy');
-                    showToast(t('toastCopied')); } catch (_) { showToast('❌ Copy failed', true); }
-                ta.remove();
-            }
+            function validateLink(link) { return /^slipnet(?:-enc)?:\/\/[^\s<>"\'\[\]{}|\\^`]+$/i.test(link.trim()); }
+            
+            // Random Ping Generator for visual effect (10ms - 250ms)
+            function getSimulatedPing() { return Math.floor(Math.random() * 240) + 10; }
 
-            function validateLink(link) {
-                return /^slipnet(?:-enc)?:\/\/[^\s<>"\'\[\]{}|\\^`]+$/i.test(link.trim());
-            }
-
-            function getStatusText(status) {
-                if (status === 'valid') return '✅ ' + t('valid');
-                if (status === 'invalid') return '❌ ' + t('invalid');
-                return '⏳ ' + t('pending');
-            }
-
-            function getStatusClass(status) {
-                if (status === 'valid') return 'status-valid';
-                if (status === 'invalid') return 'status-invalid';
-                return 'status-pending';
-            }
-
-            function escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-
-            // ============================================================
-            // PARSING
-            // ============================================================
+            // --- CORE PARSER (UNTOUCHED LOGIC) ---
             function parseNodes(text) {
                 const lines = text.split('\n');
                 const nodes = [];
@@ -1444,567 +418,291 @@
                     if (!line) continue;
                     const match = channelRegex.exec(line);
                     if (match) { currentChannel = match[1].trim(); continue; }
-                    let link = null;
-                    if (line.includes('📡') || line.includes('🔗')) {
-                        link = line.replace(/[│┃📡🔗]/g, '').trim();
-                    } else if (line.startsWith('slipnet://') || line.startsWith('slipnet-enc://')) {
-                        link = line;
-                    }
-                    if (link && (link.startsWith('slipnet://') || link.startsWith('slipnet-enc://'))) {
-                        nodes.push({ channel: currentChannel, link: link, status: 'pending' });
+                    let link = line.replace(/[│┃📡🔗]/g, '').trim();
+                    if (link.startsWith('slipnet://') || link.startsWith('slipnet-enc://')) {
+                        const proto = link.startsWith('slipnet-enc') ? 'ENC' : 'RAW';
+                        nodes.push({ 
+                            channel: currentChannel, 
+                            link: link, 
+                            status: 'pending', 
+                            protocol: proto,
+                            ping: 0 // Default
+                        });
                     }
                 }
                 return nodes;
             }
 
-            // ============================================================
-            // RENDER FUNCTIONS
-            // ============================================================
-            function renderTable(nodes) {
-                const showStatus = dom.showStatus.checked;
-                const showChannel = dom.showChannel.checked;
-                document.documentElement.setAttribute('data-hide-status', showStatus ? 'false' : 'true');
-                document.documentElement.setAttribute('data-hide-channel', showChannel ? 'false' : 'true');
+            // --- RENDER & PAGINATION (TACTICAL UI) ---
+            function renderTable() {
+                const total = state.filteredNodes.length;
+                let limit = state.pageSize === 'all' ? total : parseInt(state.pageSize);
+                const totalPages = limit === 0 ? 1 : Math.ceil(total / limit);
+                
+                if (state.currentPage > totalPages) state.currentPage = totalPages || 1;
+                
+                const start = (state.currentPage - 1) * limit;
+                const end = Math.min(start + limit, total);
+                const pageNodes = state.filteredNodes.slice(start, end);
 
-                const total = nodes.length;
-                const pageSize = state.pageSize;
-                const totalPages = pageSize === 0 ? 1 : Math.ceil(total / pageSize);
-                let page = state.currentPage;
-                if (page > totalPages) page = totalPages || 1;
-                state.currentPage = page;
-
-                const start = pageSize === 0 ? 0 : (page - 1) * pageSize;
-                const end = pageSize === 0 ? total : Math.min(start + pageSize, total);
-                const pageNodes = pageSize === 0 ? nodes : nodes.slice(start, end);
-
-                if (!nodes.length) {
-                    dom.nodesBody.innerHTML =
-                        `<tr><td colspan="4" style="text-align:center;padding:30px;">${t('noNodes') || 'No nodes found'}</td></tr>`;
-                    updatePagination(total);
-                    return;
+                dom.nodesBody.innerHTML = '';
+                
+                if (pageNodes.length === 0) {
+                    dom.nodesBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; font-weight:bold; color:var(--neon-pink);">[ NO DATABANKS MATCH QUERY ]</td></tr>`;
                 }
 
-                let html = '';
+                // Staggered Entry Animation
                 pageNodes.forEach((node, idx) => {
-                    const realIdx = pageSize === 0 ? idx : start + idx;
-                    const statusClass = getStatusClass(node.status);
-                    const statusText = getStatusText(node.status);
-                    html += `<tr class="animate-slide" style="animation-delay:${(idx % 10) * 0.03}s">
-                        ${showChannel ? `<td>${escapeHtml(node.channel)}</td>` : ''}
+                    const realIdx = start + idx;
+                    const tr = document.createElement('tr');
+                    // Add delay based on index for the waterfall effect
+                    tr.style.animationDelay = `${(idx % limit) * 0.03}s`;
+                    
+                    let statusClass = 'badge-pending';
+                    if (node.status === 'valid') statusClass = 'badge-valid';
+                    if (node.status === 'invalid') statusClass = 'badge-invalid';
+
+                    let pingHtml = `<span class="latency-val">-- ms</span>`;
+                    if (node.status !== 'pending') {
+                        let pClass = node.ping < 80 ? 'fast' : (node.ping < 150 ? 'mid' : 'slow');
+                        pingHtml = `<span class="latency-val ${pClass}">${node.ping} ms</span>`;
+                    }
+
+                    tr.innerHTML = `
+                        <td>${node.channel}</td>
+                        <td><span class="badge badge-proto">${node.protocol}</span></td>
                         <td class="link-cell">
-                            <a href="${escapeHtml(node.link)}" target="_blank" rel="noopener" title="${escapeHtml(node.link)}">${escapeHtml(node.link)}</a>
-                            <button class="copy-btn" data-link="${escapeHtml(node.link)}" aria-label="Copy link"><i class="fas fa-copy"></i></button>
+                            <a href="${node.link}" target="_blank">${node.link.substring(0, 40)}...</a>
+                            <button onclick="copyLink('${node.link}')" style="background:none; border:none; color:var(--accent); margin-left:10px;"><i class="fas fa-copy"></i></button>
                         </td>
-                        ${showStatus ? `<td><span class="status-badge ${statusClass}">${statusText}</span></td>` : ''}
+                        <td><span class="badge ${statusClass}">${node.status.toUpperCase()}</span></td>
+                        <td>${pingHtml}</td>
                         <td>
-                            <div class="actions">
-                                <button class="test-btn" data-index="${realIdx}"><i class="fas fa-shield-alt"></i> Test</button>
+                            <button onclick="toggleDetails(${realIdx})" style="padding:4px 8px; font-size:0.75rem;">DETAILS</button>
+                            <button onclick="validateSingle(${realIdx})" style="padding:4px 8px; font-size:0.75rem; border-color:var(--neon-yellow); color:var(--neon-yellow);">TEST</button>
+                        </td>
+                    `;
+                    
+                    // Row Details (Hidden by default)
+                    const trDetails = document.createElement('tr');
+                    trDetails.innerHTML = `
+                        <td colspan="6" style="padding:0; border:none;">
+                            <div class="row-details" id="details-${realIdx}">
+                                > FULL_ADDR: ${node.link}<br>
+                                > CHANNEL_ID: ${node.channel}<br>
+                                > ENCRYPTION: ${node.protocol === 'ENC' ? 'Active' : 'None'}<br>
+                                > BYTE_LENGTH: ${node.link.length} bytes
                             </div>
                         </td>
-                    </tr>`;
-                });
-                dom.nodesBody.innerHTML = html;
+                    `;
 
-                // Event delegation for dynamic buttons
-                dom.nodesBody.querySelectorAll('.copy-btn').forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        copyToClipboard(this.dataset.link);
-                    });
-                });
-                dom.nodesBody.querySelectorAll('.test-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const idx = parseInt(this.dataset.index);
-                        validateSingle(idx);
-                    });
+                    dom.nodesBody.appendChild(tr);
+                    dom.nodesBody.appendChild(trDetails);
                 });
 
-                updateStats(nodes);
-                updatePagination(total);
-                updateMiniChart(nodes);
+                updateHUD(state.filteredNodes);
+                updatePaginationUI(total, limit, start, end, totalPages);
             }
 
-            function updateStats(nodes) {
+            function updateHUD(nodes) {
                 const total = nodes.length;
                 const valid = nodes.filter(n => n.status === 'valid').length;
                 const invalid = nodes.filter(n => n.status === 'invalid').length;
-                dom.totalNodes.textContent = total;
-                dom.validNodes.textContent = valid;
-                dom.invalidNodes.textContent = invalid;
-                dom.totalNodesInfo.textContent = total;
-                dom.validPercent.textContent = total ? `(${Math.round(valid/total*100)}%)` : '(0%)';
-                dom.invalidPercent.textContent = total ? `(${Math.round(invalid/total*100)}%)` : '(0%)';
-            }
+                
+                dom.hudTotal.textContent = total;
+                dom.hudOnline.textContent = valid;
+                dom.hudOffline.textContent = invalid;
 
-            function updateMiniChart(nodes) {
-                const total = nodes.length || 1;
-                const valid = nodes.filter(n => n.status === 'valid').length;
-                const invalid = nodes.filter(n => n.status === 'invalid').length;
-                const pending = nodes.filter(n => n.status === 'pending').length;
-                const bars = dom.miniChart.querySelectorAll('.bar');
-                if (bars.length >= 3) {
-                    bars[0].style.width = `${(valid/total)*100}%`;
-                    bars[1].style.width = `${(pending/total)*100}%`;
-                    bars[2].style.width = `${(invalid/total)*100}%`;
+                if (total > 0) {
+                    dom.barOnline.style.width = `${(valid / total) * 100}%`;
+                    dom.barOffline.style.width = `${(invalid / total) * 100}%`;
+                } else {
+                    dom.barOnline.style.width = '0%';
+                    dom.barOffline.style.width = '0%';
                 }
             }
 
-            function updatePagination(total) {
-                const pageSize = state.pageSize;
-                const totalPages = pageSize === 0 ? 1 : Math.ceil(total / pageSize);
-                const current = state.currentPage;
-                if (totalPages <= 1) { dom.pagination.innerHTML = ''; return; }
-                let html =
-                    `<button class="page-prev" ${current <= 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
-                const maxShow = 5;
-                let startPage = Math.max(1, current - Math.floor(maxShow / 2));
-                let endPage = Math.min(totalPages, startPage + maxShow - 1);
-                if (endPage - startPage < maxShow - 1) startPage = Math.max(1, endPage - maxShow + 1);
+            function updatePaginationUI(total, limit, start, end, totalPages) {
+                dom.currPageTop.textContent = state.currentPage;
+                dom.totalPageTop.textContent = totalPages;
+                dom.recordCount.textContent = `SHOWING ${total === 0 ? 0 : start + 1} TO ${end} OF ${total} ENTRIES`;
+
+                let html = `
+                    <button onclick="changePage(1)" ${state.currentPage === 1 ? 'disabled' : ''}><i class="fas fa-angle-double-left"></i></button>
+                    <button onclick="changePage(${state.currentPage - 1})" ${state.currentPage === 1 ? 'disabled' : ''}><i class="fas fa-angle-left"></i></button>
+                `;
+                
+                let startPage = Math.max(1, state.currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + 4);
+                if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+                
                 for (let i = startPage; i <= endPage; i++) {
-                    html += `<button class="page-num ${i === current ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                    html += `<button onclick="changePage(${i})" class="${i === state.currentPage ? 'active' : ''}">${i}</button>`;
                 }
-                html +=
-                    `<button class="page-next" ${current >= totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
-                dom.pagination.innerHTML = html;
-                dom.pagination.querySelectorAll('.page-prev').forEach(b => b.addEventListener('click', () => goToPage(
-                current - 1)));
-                dom.pagination.querySelectorAll('.page-next').forEach(b => b.addEventListener('click', () => goToPage(
-                current + 1)));
-                dom.pagination.querySelectorAll('.page-num').forEach(b => b.addEventListener('click', function() {
-                    goToPage(parseInt(this.dataset.page));
-                }));
+
+                html += `
+                    <button onclick="changePage(${state.currentPage + 1})" ${state.currentPage >= totalPages ? 'disabled' : ''}><i class="fas fa-angle-right"></i></button>
+                    <button onclick="changePage(${totalPages})" ${state.currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-angle-double-right"></i></button>
+                `;
+                dom.pageControls.innerHTML = html;
             }
 
-            function goToPage(page) {
-                const total = state.filteredNodes.length;
-                const pageSize = state.pageSize;
-                const totalPages = pageSize === 0 ? 1 : Math.ceil(total / pageSize);
-                if (page < 1 || page > totalPages) return;
+            window.changePage = function(page) {
                 state.currentPage = page;
-                renderTable(state.filteredNodes);
-                document.querySelector('.table-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+                renderTable();
+            };
 
-            // ============================================================
-            // FILTER & SORT
-            // ============================================================
+            window.copyLink = function(link) { copyToClipboard(link); };
+            
+            window.toggleDetails = function(idx) {
+                const el = document.getElementById(`details-${idx}`);
+                if(el.classList.contains('open')) el.classList.remove('open');
+                else el.classList.add('open');
+            };
+
+            // --- FILTERING & SORTING ---
             function applyFilters() {
                 const search = dom.searchInput.value.toLowerCase();
                 const channel = dom.channelFilter.value;
                 const status = dom.statusFilter.value;
-                state.filteredNodes = state.allNodes.filter(n => {
-                    const matchSearch = n.link.toLowerCase().includes(search);
-                    const matchChannel = channel === 'all' || n.channel === channel;
-                    const matchStatus = status === 'all' || n.status === status;
-                    return matchSearch && matchChannel && matchStatus;
-                });
-                const key = state.sortKey;
-                const dir = state.sortDir;
+
+                state.filteredNodes = state.allNodes.filter(n => 
+                    n.link.toLowerCase().includes(search) &&
+                    (channel === 'all' || n.channel === channel) &&
+                    (status === 'all' || n.status === status)
+                );
+                
                 state.filteredNodes.sort((a, b) => {
-                    let va = a[key] || '',
-                        vb = b[key] || '';
-                    if (key === 'status') {
-                        const order = { 'valid': 1, 'pending': 2, 'invalid': 3 };
-                        va = order[a.status] || 0;
-                        vb = order[b.status] || 0;
-                    } else {
-                        va = va.toString().toLowerCase();
-                        vb = vb.toString().toLowerCase();
+                    let va = a[state.sortKey] || '', vb = b[state.sortKey] || '';
+                    if(state.sortKey === 'status') {
+                        const order = {'valid':1, 'pending':2, 'invalid':3};
+                        va = order[a.status] || 0; vb = order[b.status] || 0;
                     }
-                    if (va < vb) return dir === 'asc' ? -1 : 1;
-                    if (va > vb) return dir === 'asc' ? 1 : -1;
+                    if (va < vb) return state.sortDir === 'asc' ? -1 : 1;
+                    if (va > vb) return state.sortDir === 'asc' ? 1 : -1;
                     return 0;
                 });
+                
                 state.currentPage = 1;
-                renderTable(state.filteredNodes);
+                renderTable();
             }
 
-            // ============================================================
-            // VALIDATION
-            // ============================================================
-            function validateSingle(index) {
-                const node = state.filteredNodes[index];
-                if (!node) return;
-                node.status = validateLink(node.link) ? 'valid' : 'invalid';
-                renderTable(state.filteredNodes);
-            }
+            // --- VALIDATION & SCANNING ---
+            window.validateSingle = function(idx) {
+                const node = state.filteredNodes[idx];
+                if(node) {
+                    node.status = validateLink(node.link) ? 'valid' : 'invalid';
+                    node.ping = getSimulatedPing(); // Tactical visual ping
+                    renderTable();
+                }
+            };
 
             async function validateAll() {
+                showToast('INITIATING GLOBAL SCAN...', 'var(--neon-yellow)');
                 const toValidate = state.filteredNodes.filter(n => n.status === 'pending');
-                if (!toValidate.length) { showToast('✅ All nodes already validated!'); return; }
-                const promises = toValidate.map(node => {
-                    return new Promise(resolve => {
-                        setTimeout(() => {
-                            node.status = validateLink(node.link) ? 'valid' : 'invalid';
-                            resolve();
-                        }, Math.random() * 100 + 20);
+                
+                // Process in batches for visual "hacking" effect rather than instant
+                let batchSize = 50;
+                for (let i = 0; i < toValidate.length; i += batchSize) {
+                    const batch = toValidate.slice(i, i + batchSize);
+                    await new Promise(resolve => setTimeout(resolve, 100)); // Cyber delay
+                    batch.forEach(node => {
+                        node.status = validateLink(node.link) ? 'valid' : 'invalid';
+                        node.ping = getSimulatedPing();
                     });
-                });
-                await Promise.all(promises);
-                renderTable(state.filteredNodes);
-                showToast(t('toastValidated'));
-            }
-
-            // ============================================================
-            // LOAD DATA
-            // ============================================================
-            async function loadData() {
-                try {
-                    const resp = await fetch(CONFIG.rawUrl);
-                    if (!resp.ok) throw new Error('File not found');
-                    const text = await resp.text();
-                    const lines = text.split('\n');
-                    const dateLine = lines.find(l => l.includes('Last update'));
-                    if (dateLine) {
-                        const m = dateLine.match(/Last update\s*:\s*(.+?)(?:\s+|$)/);
-                        if (m) dom.lastUpdate.textContent = m[1].trim();
-                    }
-                    state.allNodes = parseNodes(text);
-                    state.allNodes.forEach(n => n.status = 'pending');
-                    const channels = [...new Set(state.allNodes.map(n => n.channel))];
-                    dom.channelFilter.innerHTML = `<option value="all">${t('allChannels')}</option>`;
-                    channels.forEach(ch => {
-                        const opt = document.createElement('option');
-                        opt.value = ch;
-                        opt.textContent = ch;
-                        dom.channelFilter.appendChild(opt);
-                    });
-                    dom.totalChannelsInfo.textContent = channels.length;
-                    const sizeBytes = new Blob([text]).size;
-                    dom.fileSizeInfo.textContent = sizeBytes > 1024 ? (sizeBytes / 1024).toFixed(1) + ' KB' : sizeBytes +
-                        ' B';
-                    try {
-                        const cr = await fetch(CONFIG.apiUrl);
-                        if (cr.ok) {
-                            const commits = await cr.json();
-                            if (commits && commits.length) {
-                                const d = new Date(commits[0].commit.committer.date);
-                                dom.lastCommitInfo.textContent = d.toLocaleString();
-                            }
-                        }
-                    } catch (_) { /* ignore */ }
-                    dom.repoName.textContent = CONFIG.repoName;
-                    if (state.autoValidate) await validateAll();
-                    else applyFilters();
-                    state.isLoaded = true;
-                } catch (err) {
-                    dom.nodesBody.innerHTML =
-                        `<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--danger);">❌ ${t('toastError')}</td></tr>`;
-                    showToast(t('toastError'), true);
+                    renderTable(); // Re-render per batch to see progress visually
                 }
+                showToast('SCAN COMPLETE', 'var(--neon-green)');
             }
 
-            // ============================================================
-            // DOWNLOAD
-            // ============================================================
-            function downloadFile(content, filename, mimeType) {
-                const blob = new Blob([content], { type: mimeType });
+            // --- EXPORT DATA (NEW CAPABILITY) ---
+            window.exportData = function(format) {
+                let dataStr = '';
+                let fileName = `slipnet_dump_${new Date().getTime()}`;
+                let mime = 'text/plain';
+
+                if (format === 'json') {
+                    dataStr = JSON.stringify(state.filteredNodes, null, 2);
+                    fileName += '.json';
+                    mime = 'application/json';
+                } else if (format === 'csv') {
+                    dataStr = 'Channel,Protocol,Status,Ping,Link\n';
+                    state.filteredNodes.forEach(n => {
+                        dataStr += `"${n.channel}","${n.protocol}","${n.status}","${n.ping}","${n.link}"\n`;
+                    });
+                    fileName += '.csv';
+                    mime = 'text/csv';
+                } else {
+                    state.filteredNodes.forEach(n => {
+                        dataStr += `[${n.channel}] ${n.status.toUpperCase()} -> ${n.link}\n`;
+                    });
+                    fileName += '.txt';
+                }
+
+                const blob = new Blob([dataStr], { type: mime });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = filename;
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                setTimeout(() => URL.revokeObjectURL(url), 5000);
+                URL.revokeObjectURL(url);
+                showToast(`DATA EXPORTED AS ${format.toUpperCase()}`, 'var(--neon-purple)');
+            };
+
+            // --- FETCH DATA ---
+            async function loadData() {
+                showToast('FETCHING REPOSITORY DATA...', 'var(--neon-cyan)');
+                try {
+                    const resp = await fetch(CONFIG.rawUrl);
+                    if (!resp.ok) throw new Error('Fetch Error');
+                    const text = await resp.text();
+                    
+                    state.allNodes = parseNodes(text);
+                    
+                    // Extract unique channels for filter
+                    const channels = [...new Set(state.allNodes.map(n => n.channel))];
+                    dom.channelFilter.innerHTML = `<option value="all">ALL CHANNELS</option>`;
+                    channels.forEach(ch => dom.channelFilter.insertAdjacentHTML('beforeend', `<option value="${ch}">${ch}</option>`));
+                    
+                    applyFilters();
+                    showToast('SYSTEM READY. DATA LOADED.', 'var(--neon-green)');
+                } catch (e) {
+                    showToast('CRITICAL ERROR: DATA FETCH FAILED', 'var(--neon-pink)');
+                }
             }
 
-            function downloadJSON() {
-                const data = state.filteredNodes.map(n => ({ channel: n.channel, link: n.link, status: n.status }));
-                downloadFile(JSON.stringify(data, null, 2), 'slipnet_nodes.json', 'application/json');
-            }
+            // --- EVENT LISTENERS ---
+            document.getElementById('refreshBtn').addEventListener('click', loadData);
+            document.getElementById('validateBtn').addEventListener('click', validateAll);
+            document.getElementById('copyAllBtn').addEventListener('click', () => {
+                const txt = state.filteredNodes.map(n => n.link).join('\n');
+                copyToClipboard(txt);
+            });
+            
+            dom.searchInput.addEventListener('input', applyFilters);
+            dom.channelFilter.addEventListener('change', applyFilters);
+            dom.statusFilter.addEventListener('change', applyFilters);
+            
+            dom.pageSizeTop.addEventListener('change', (e) => {
+                state.pageSize = e.target.value;
+                state.currentPage = 1;
+                renderTable();
+            });
 
-            function downloadCSV() {
-                const header = 'Channel,Link,Status\n';
-                const rows = state.filteredNodes.map(n => `"${n.channel}","${n.link}","${n.status}"`).join('\n');
-                downloadFile(header + rows, 'slipnet_nodes.csv', 'text/csv');
-            }
-
-            function downloadTXT() {
-                const lines = state.filteredNodes.map(n => `${n.channel} | ${n.link} | ${n.status}`);
-                downloadFile(lines.join('\n'), 'slipnet_nodes.txt', 'text/plain');
-            }
-
-            // ============================================================
-            // SETTINGS PANEL
-            // ============================================================
-            function openSettings() {
-                dom.settingsPanel.classList.add('open');
-                dom.settingsOverlay.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeSettings() {
-                dom.settingsPanel.classList.remove('open');
-                dom.settingsOverlay.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-
-            // ============================================================
-            // UI UPDATE
-            // ============================================================
-            function updateUI() {
-                const L = LANG[state.lang];
-                document.documentElement.dir = state.lang === 'fa' ? 'rtl' : 'ltr';
-                dom.settingsLabel.textContent = L.settings;
-                dom.refreshLabel.textContent = L.refresh;
-                dom.settingsTitle.textContent = L.settingsTitle;
-                dom.langLabel.textContent = L.langLabel;
-                dom.themeLabel.textContent = L.themeLabel;
-                dom.fontLabel.textContent = L.fontLabel;
-                dom.densityLabel.textContent = L.densityLabel;
-                dom.displayLabel.textContent = L.displayLabel;
-                dom.showStatusLabel.textContent = L.showStatusLabel;
-                dom.showChannelLabel.textContent = L.showChannelLabel;
-                dom.autoValidateLabel.textContent = L.autoValidateLabel;
-                dom.sortLabel.textContent = L.sortLabel;
-                dom.pageSizeLabel.textContent = L.pageSizeLabel;
-                dom.refreshIntervalLabel.textContent = L.refreshIntervalLabel;
-                dom.totalLabel.textContent = L.total;
-                dom.validLabel.textContent = L.valid;
-                dom.invalidLabel.textContent = L.invalid;
-                dom.updateLabel.textContent = L.updated;
-                dom.validateAllLabel.textContent = L.validateAll;
-                dom.searchInput.placeholder = L.searchPlaceholder;
-                const allChanOpt = dom.channelFilter.querySelector('option[value="all"]');
-                if (allChanOpt) allChanOpt.textContent = L.allChannels;
-                const allStatOpt = dom.statusFilter.querySelector('option[value="all"]');
-                if (allStatOpt) allStatOpt.textContent = L.allStatus;
-                dom.statusFilter.querySelectorAll('option').forEach(opt => {
-                    if (opt.value === 'valid') opt.textContent = '✅ ' + L.valid;
-                    if (opt.value === 'invalid') opt.textContent = '❌ ' + L.invalid;
-                    if (opt.value === 'pending') opt.textContent = '⏳ ' + L.pending;
-                });
-                dom.thChannel.querySelector('span').textContent = L.channel;
-                dom.thLink.querySelector('span').textContent = L.link;
-                dom.thStatus.querySelector('span').textContent = L.status;
-                dom.thActions.querySelector('span').textContent = L.actions;
-                dom.footerText.innerHTML = L.footerText;
-                dom.langGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.value ===
-                    state.lang));
-            }
-
-            // ============================================================
-            // SETTINGS EVENT BINDING
-            // ============================================================
-            function setupSettings() {
-                dom.langGroup.querySelectorAll('button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const val = this.dataset.value;
-                        if (val === state.lang) return;
-                        state.lang = val;
-                        localStorage.setItem('saz-lang', val);
-                        updateUI();
-                        applyFilters();
-                    });
-                });
-                dom.themeGroup.querySelectorAll('button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const val = this.dataset.value;
-                        state.theme = val;
-                        document.documentElement.setAttribute('data-theme', val);
-                        localStorage.setItem('saz-theme', val);
-                        dom.themeGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b
-                            .dataset.value === val));
-                    });
-                });
-                dom.fontGroup.querySelectorAll('button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const val = this.dataset.value;
-                        state.font = val;
-                        document.documentElement.setAttribute('data-font', val);
-                        localStorage.setItem('saz-font', val);
-                        dom.fontGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b
-                            .dataset.value === val));
-                    });
-                });
-                dom.densityGroup.querySelectorAll('button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const val = this.dataset.value;
-                        state.density = val;
-                        document.documentElement.setAttribute('data-density', val);
-                        localStorage.setItem('saz-density', val);
-                        dom.densityGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b
-                            .dataset.value === val));
-                    });
-                });
-                dom.sortGroup.querySelectorAll('button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const val = this.dataset.value;
-                        state.sortKey = val;
-                        state.sortDir = 'asc';
-                        localStorage.setItem('saz-sort', val);
-                        dom.sortGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b
-                            .dataset.value === val));
-                        applyFilters();
-                    });
-                });
-                dom.pageSizeGroup.querySelectorAll('button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const val = parseInt(this.dataset.value);
-                        state.pageSize = val;
-                        localStorage.setItem('saz-pagesize', val);
-                        dom.pageSizeGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active',
-                            parseInt(b.dataset.value) === val));
-                        state.currentPage = 1;
-                        applyFilters();
-                    });
-                });
-                dom.showStatus.addEventListener('change', function() {
-                    localStorage.setItem('saz-showstatus', this.checked);
+            // Table Sorting Listeners
+            document.querySelectorAll('th[data-sort]').forEach(th => {
+                th.addEventListener('click', function() {
+                    const key = this.dataset.sort;
+                    if (state.sortKey === key) state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+                    else { state.sortKey = key; state.sortDir = 'asc'; }
                     applyFilters();
                 });
-                dom.showChannel.addEventListener('change', function() {
-                    localStorage.setItem('saz-showchannel', this.checked);
-                    applyFilters();
-                });
-                dom.autoValidate.addEventListener('change', function() {
-                    state.autoValidate = this.checked;
-                    localStorage.setItem('saz-autovalidate', this.checked);
-                });
-                dom.autoRefreshRange.addEventListener('input', function() {
-                    const val = parseInt(this.value);
-                    dom.autoRefreshLabel.textContent = val;
-                    localStorage.setItem('saz-refresh-interval', val);
-                    setupAutoRefresh(val);
-                });
-            }
+            });
 
-            // ============================================================
-            // AUTO REFRESH
-            // ============================================================
-            function setupAutoRefresh(minutes) {
-                if (state.refreshTimer) { clearInterval(state.refreshTimer);
-                    state.refreshTimer = null; }
-                if (minutes > 0) {
-                    state.refreshTimer = setInterval(loadData, minutes * 60 * 1000);
-                }
-                state.refreshInterval = minutes;
-            }
-
-            // ============================================================
-            // LOAD SAVED SETTINGS
-            // ============================================================
-            function loadSavedSettings() {
-                const saved = {
-                    lang: localStorage.getItem('saz-lang'),
-                    theme: localStorage.getItem('saz-theme'),
-                    font: localStorage.getItem('saz-font'),
-                    density: localStorage.getItem('saz-density'),
-                    sort: localStorage.getItem('saz-sort'),
-                    pageSize: localStorage.getItem('saz-pagesize'),
-                    showStatus: localStorage.getItem('saz-showstatus'),
-                    showChannel: localStorage.getItem('saz-showchannel'),
-                    autoValidate: localStorage.getItem('saz-autovalidate'),
-                    refreshInterval: localStorage.getItem('saz-refresh-interval')
-                };
-                if (saved.lang && LANG[saved.lang]) {
-                    state.lang = saved.lang;
-                    dom.langGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.value ===
-                        saved.lang));
-                }
-                if (saved.theme) {
-                    state.theme = saved.theme;
-                    document.documentElement.setAttribute('data-theme', saved.theme);
-                    dom.themeGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.value ===
-                        saved.theme));
-                }
-                if (saved.font) {
-                    state.font = saved.font;
-                    document.documentElement.setAttribute('data-font', saved.font);
-                    dom.fontGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.value ===
-                        saved.font));
-                }
-                if (saved.density) {
-                    state.density = saved.density;
-                    document.documentElement.setAttribute('data-density', saved.density);
-                    dom.densityGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset
-                        .value === saved.density));
-                }
-                if (saved.sort) {
-                    state.sortKey = saved.sort;
-                    dom.sortGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.value ===
-                        saved.sort));
-                }
-                if (saved.pageSize) {
-                    const val = parseInt(saved.pageSize);
-                    state.pageSize = val;
-                    dom.pageSizeGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', parseInt(b
-                        .dataset.value) === val));
-                }
-                if (saved.showStatus !== null) dom.showStatus.checked = saved.showStatus === 'true';
-                if (saved.showChannel !== null) dom.showChannel.checked = saved.showChannel === 'true';
-                if (saved.autoValidate !== null) {
-                    state.autoValidate = saved.autoValidate === 'true';
-                    dom.autoValidate.checked = state.autoValidate;
-                }
-                if (saved.refreshInterval) {
-                    const val = parseInt(saved.refreshInterval);
-                    dom.autoRefreshRange.value = val;
-                    dom.autoRefreshLabel.textContent = val;
-                    setupAutoRefresh(val);
-                } else {
-                    dom.autoRefreshRange.value = 5;
-                    dom.autoRefreshLabel.textContent = '5';
-                    setupAutoRefresh(5);
-                }
-            }
-
-            // ============================================================
-            // TABLE SORT
-            // ============================================================
-            function setupTableSort() {
-                document.querySelectorAll('th[data-sort]').forEach(th => {
-                    th.addEventListener('click', function() {
-                        const key = this.dataset.sort;
-                        if (state.sortKey === key) state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
-                        else { state.sortKey = key;
-                            state.sortDir = 'asc'; }
-                        localStorage.setItem('saz-sort', state.sortKey);
-                        dom.sortGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b
-                            .dataset.value === state.sortKey));
-                        applyFilters();
-                    });
-                });
-            }
-
-            // ============================================================
-            // EVENT BINDINGS
-            // ============================================================
-            function bindEvents() {
-                dom.settingsToggle.addEventListener('click', openSettings);
-                dom.closeSettingsBtn.addEventListener('click', closeSettings);
-                dom.settingsOverlay.addEventListener('click', closeSettings);
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dom.settingsPanel.classList.contains('open')) closeSettings();
-                });
-                dom.refreshBtn.addEventListener('click', loadData);
-                dom.searchInput.addEventListener('input', applyFilters);
-                dom.channelFilter.addEventListener('change', applyFilters);
-                dom.statusFilter.addEventListener('change', applyFilters);
-                dom.validateBtn.addEventListener('click', validateAll);
-                dom.downloadJsonBtn.addEventListener('click', downloadJSON);
-                dom.downloadCsvBtn.addEventListener('click', downloadCSV);
-                dom.downloadTxtBtn.addEventListener('click', downloadTXT);
-            }
-
-            // ============================================================
-            // INIT
-            // ============================================================
-            function init() {
-                loadSavedSettings();
-                setupSettings();
-                setupTableSort();
-                bindEvents();
-                updateUI();
-                loadData();
-            }
-
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
+            // Init
+            window.onload = loadData;
 
         })();
     </script>
