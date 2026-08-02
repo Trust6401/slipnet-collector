@@ -179,7 +179,7 @@ Links that pass are marked **✅ Valid**, others **❌ Invalid**, and unvalidate
 
 ## 📜 License
 
-This project is open‑source and available under the **MIT License** (see [LICENSE](LICENSE) file for details).
+This project is open‑source and available under the **APGL v3 License** (see [LICENSE](LICENSE) file for details).
 
 ---
 
